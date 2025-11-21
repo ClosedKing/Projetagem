@@ -1,54 +1,20 @@
-public class Livro {
-    private long id;
-    private String titulo;
-    private String autor;
-    private int ano;
-    private String categoria;
 
-    //Construtor com parâmetros, define os itens iniciais do objeto.
-    public Livro(long id, String titulo, String autor, int ano, String categoria) {
-        this.id = id;
-        this.titulo = titulo;
-        this.autor = autor;
-        this.ano = ano;
-        this.categoria = categoria;
-    };
+//Extender essa classe, chamar de item biblioteca.
+//Fazer abtract 
+public class Livro extends itemBiblioteca {
+    private double multa;
 
-    public String getTitulo() {
-        return titulo;
-    };
-    public String getAutor() {
-        return autor;
-    };
-    public int getAno() {
-        return ano;
-    };
-    public String getCategoria() {
-        return categoria;
-    };
+    public Livro(long id, String isbn, String titulo, String autor, int ano, String categoria, boolean emprestado, double multa) {
+        super(id, isbn, titulo, autor, ano, categoria, emprestado);
+        this.multa = multa;
+    }
 
-    // Todos devem ser não nulo, verificar outras regrasd e negócio...
-    public void setId(long id) {// Isso é o isbn???
-        // não pode ter outro igual, gerado automaticamente
-        this.id = id;
-    };
-    public void setTitulo(String titulo) {
-        // Não repete
-        this.titulo = titulo;
-    };
-    public void setAutor(String autor) {
-        this.autor = autor;
-    };
-    public void setAno(int ano) {
-        // Valor positivo e não pode ser ano futuro
-        this.ano = ano;
-    };
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    };
+    public double getMulta() {
+        return multa;
+    }
 
-    public String toString() {
-        return "Livro cadastrado é: "+ titulo;
+    public void setMulta(float multa) {
+        this.multa = multa;
     }
 
 }
