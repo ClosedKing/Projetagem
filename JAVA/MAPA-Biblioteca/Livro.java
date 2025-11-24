@@ -27,9 +27,10 @@ public class Livro extends itemBiblioteca {
 
         long diasEmprestado = ChronoUnit.DAYS.between(dataEmprestimo, LocalDate.now());
 
-        // Se passou mais de 10 dias, cobra R$ 5 por dia de atraso
+        // Se passou mais de 10 dias, cobra R$ 1,50 por dia de atraso.
+        //Décimo dia pode ser última oportunidade para o usuário devolver...
         if (diasEmprestado > 10) {
-            return (diasEmprestado - 10) * 5.0;
+            return (diasEmprestado - 10) * 1.5;
         }
 
         return 0.0;

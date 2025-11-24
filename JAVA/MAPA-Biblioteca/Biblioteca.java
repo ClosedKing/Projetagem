@@ -24,12 +24,19 @@ public class Biblioteca {
             System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
             System.out.println("\n\nFavor escolher uma das opções abaixo:");
             System.out.println(
-                    "\n1- Cadastrar livro \n2- Alterar livro (por ID ou ISBN) \n3- Pesquisar livro (por título/autor/ISBN) \n4- Excluir \n5- Listar Livros \n6- Pegar Emprestado \n7- Devolver Livro \n8- Sair");
+                    "\n1- Cadastrar livro \n2- Alterar livro (por ID ou ISBN) \n3- Pesquisar livro (por título/autor/ISBN) \n4- Excluir \n5- Listar Livros \n6- Pegar Emprestado \n7- Devolver Livro \n0- Sair");
             System.out.println("============================================");
 
             escolha = Integer.parseInt(scanner.nextLine().trim());
 
             switch (escolha) {
+                case 0:
+                    // Gambiarra para limpar o console
+                    for (int i = 0; i < 50; i++) {
+                        System.out.println("\n");
+                    }
+                    System.out.println("Obrigado por utilizar a LIVROTECA, até a próxima!\n\n :)");
+                    break;
                 case 1:
                     CadastrarLivro();
                     break;
@@ -82,7 +89,7 @@ public class Biblioteca {
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("\n======================================================");
-                            System.out.println("Entrada inválida. Digite apenas 1 ou 2. Escolha novamente... ");
+                            System.out.println("Entrada inválida. Deve digitar apenas um número. tente novamente... ");
                         }
                     }
                     ListarLivro(x);
@@ -93,19 +100,12 @@ public class Biblioteca {
                 case 7:
                     DevolverLivro();
                     break;
-                case 8:
-                    // Gambiarra para limpar o console
-                    for (int i = 0; i < 50; i++) {
-                        System.out.println("\n");
-                    }
-                    System.out.println("Obrigado por utilizar a LIVROTECA, até a próxima!\n");
-                    break;
                 default:
-                    System.out.println("Opção inválida, favor digite apenas o número dentre os fornecidos");
+                    System.out.println("Opção inválida, favor digite apenas UM número dentre os fornecidos");
                     break;
             }
 
-        } while (escolha != 8);
+        } while (escolha != 0);
         scanner.close();// Fechamento do scanner.
     } // Encerramento classe principal.1
 
@@ -118,25 +118,59 @@ public class Biblioteca {
         long id = nextId.getAndIncrement();
 
         System.out.println("============================================");
-        System.out.println("Vamos prosseguir para o cadastro, favor insira abaixo o ISBN do livro:");
-        String isbn = scanner.nextLine();
-
-        System.out.println("\n========================================");
+        System.out.println("CADASTRO DE LIVROS");
+        System.out.println("============================================");
+        System.out.println("\n\n\n==================================================");
+        System.out.println("Para o cadastro, favor insira abaixo o ISBN do livro:");
+        String isbn;
+        // Validar ISBN (Antes de 2007 podiam ter 'X' no final, por isso validei apenas
+        // vazio e repetidos).
+        while (true) {
+            try {
+                isbn = scanner.nextLine().trim();
+                if (isbn.isEmpty()) {
+                    System.out.println("\n===================================");
+                    System.out.println("ERRO: O ISBN não pode ser vazio!");
+                    System.out.println("Por favor, insira um ISBN válido.");
+                    continue;
+                } else if (buscarLivroPorIsbn(isbn) != null) {
+                    System.out.println("\n=====================================");
+                    System.out.println("ERRO: Este ISBN já está cadastrado!");
+                    System.out.println("Por favor, insira um ISBN diferente.");
+                    continue;
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("\n=========================================");
+                System.out.println("ERRO: Entrada inválida. Tente novamente.");
+            }
+        }
+        System.out.println("\n================================");
         System.out.println("ótimo, e qual o título do livro?");
         String titulo = scanner.nextLine();
 
-        System.out.println("\n========================================");
+        System.out.println("\n===========================");
         System.out.println("Perfeito, e qual é o autor?");
         String autor = scanner.nextLine();
-
-        // Validar ano
+        // Validar Ano
         int ano;
         while (true) {
-            System.out.println("\n========================================");
+            System.out.println("\n=========================================");
             System.out.println("Favor informe o ano, apenas os números:");
             String entradaAno = scanner.nextLine().trim();
             try {
                 ano = Integer.parseInt(entradaAno);
+                if (ano <= 0) {
+                    System.out.println("\n==============================================");
+                    System.out.println("ERRO: O ano deve ser um número positivo!");
+                    System.out.println("Por favor, insira um ano válido (ex.: 1966).");
+                    continue;
+                } else if (entradaAno.isEmpty()) {
+                    System.out.println("\n======================================");
+                    System.out.println("ERRO: O ano não pode ser vazio!");
+                    System.out.println("Por favor, insira um ano (ex.: 1966).");
+                    continue;
+                }
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("\n======================================================");
@@ -164,7 +198,7 @@ public class Biblioteca {
         System.out.println("============================================");
 
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -183,13 +217,14 @@ public class Biblioteca {
                     System.out.println("Opção inválida. Deve ser 1 ou 2. Escolha novamente... ");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("\n======================================================");
+                System.out.println("\n=============================================================");
                 System.out.println("Entrada inválida. Digite apenas 1 ou 2. Escolha novamente... ");
             }
         }
 
         Livro l = null;
         if (y == 1) { // buscar por ID
+            System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
             System.out.println("Informe o ID do livro:");
             try {
                 long idBusca = Long.parseLong(scanner.nextLine().trim());
@@ -199,6 +234,7 @@ public class Biblioteca {
                 return;
             }
         } else { // buscar por ISBN
+            System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
             System.out.println("Informe o ISBN do livro:");
             String isbnBusca = scanner.nextLine().trim();
             l = buscarLivroPorIsbn(isbnBusca);
@@ -224,20 +260,27 @@ public class Biblioteca {
         try {
             opcao = Integer.parseInt(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
-            System.out.println("Entrada inválida. Cancelando.");
+            System.out.println(
+                    "Entrada inválida!! Favor reinicie o processo inserindo todas as informações corretas. \nCancelando.");
             return;
         }
 
         switch (opcao) {
             case 1:
+                System.out.println("=-=-=-=-=-=-=-=");
                 System.out.println("Novo título:");
                 l.setTitulo(scanner.nextLine());
+                System.out.println("\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 System.out.println("Título alterado com sucesso!");
+                System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 break;
             case 2:
+                System.out.println("=-=-=-=-=-=-=-=-=-=");
                 System.out.println("Novo autor:");
                 l.setAutor(scanner.nextLine());
+                System.out.println("\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 System.out.println("Autor alterado com sucesso!");
+                System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 break;
             case 3:
                 System.out.println("Novo ISBN:");
@@ -247,7 +290,9 @@ public class Biblioteca {
                     System.out.println("ISBN já cadastrado em outro livro. Alteração cancelada.");
                 } else {
                     l.setIsbn(novoIsbn);
+                    System.out.println("\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                     System.out.println("ISBN alterado com sucesso!");
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 }
                 break;
             case 4:
@@ -255,7 +300,9 @@ public class Biblioteca {
                 try {
                     int novoAno = Integer.parseInt(scanner.nextLine().trim());
                     l.setAno(novoAno);
+                    System.out.println("\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                     System.out.println("Ano alterado com sucesso!");
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 } catch (NumberFormatException e) {
                     System.out.println("Ano inválido. Alteração cancelada.");
                 }
@@ -263,13 +310,15 @@ public class Biblioteca {
             case 5:
                 System.out.println("Nova categoria:");
                 l.setCategoria(scanner.nextLine());
+                System.out.println("\n\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 System.out.println("Categoria alterada com sucesso!");
+                System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                 break;
             case 0:
                 System.out.println("Alteração cancelada.");
                 break;
             default:
-                System.out.println("Opção inválida.");
+                System.out.println("Opção inválida. Favor escolher UM entre os números fornecidos");
         }
     }
 
@@ -283,7 +332,7 @@ public class Biblioteca {
         System.out.println("============================================");
 
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -291,53 +340,56 @@ public class Biblioteca {
         boolean encontrado = false;
 
         switch (op) {
-            case 1: // Pesquisar por TÍTULO
+            case 1: // Título
+            System.out.println("\n\n\n================================================");
                 System.out.println("Informe o TÍTULO do livro que deseja buscar:");
                 termoBusca = scanner.nextLine().trim();
-                System.out.println("======================================================\n");
+                
 
                 for (Livro l : livros) {
                     if (l.getTitulo().equalsIgnoreCase(termoBusca)) {
                         System.out.println("Livro encontrado com sucesso:");
+                        System.out.println("======++==============++=======\n\n");
                         System.out.println(l);
-                        System.out.println("======================================================");
+                        System.out.println("===========================");
                         encontrado = true;
                     }
                 }
                 break;
 
-            case 2: // Pesquisar por AUTOR
+            case 2: // Autor
+            System.out.println("\n\n\n================================================");
                 System.out.println("Informe o AUTOR do livro que deseja buscar:");
                 termoBusca = scanner.nextLine().trim();
-                System.out.println("======================================================\n");
 
                 for (Livro l : livros) {
                     if (l.getAutor().equalsIgnoreCase(termoBusca)) {
-                        System.out.println("Livro encontrado com sucesso:");
+                        System.out.println("======++==============++=======\n\n");
                         System.out.println(l);
-                        System.out.println("======================================================");
+                        System.out.println("===========================");
                         encontrado = true;
                     }
                 }
                 break;
 
-            case 3: // Pesquisar por ISBN
+            case 3: // ISBN
+            System.out.println("\n\n\n================================================");
                 System.out.println("Informe o ISBN do livro que deseja buscar:");
                 termoBusca = scanner.nextLine().trim();
-                System.out.println("======================================================\n");
                 Livro l = buscarLivroPorIsbn(termoBusca);
                 if (l != null) {
-                    System.out.println("Livro encontrado com sucesso:");
-                    System.out.println(l);
-                    System.out.println("======================================================");
+                    System.out.println("======++==============++=======\n\n");
+                        System.out.println(l);
+                        System.out.println("===========================");
                     encontrado = true;
                 }
                 break;
         }
 
         if (!encontrado) {
-            System.out.println("Nenhum livro encontrado com o critério informado!");
-            System.out.println("======================================================");
+            System.out.println("\n\n\n==========++============++===========++=============");
+            System.out.println("Nenhum livro encontrado com o critério informado...");
+            System.out.println("==========++============++===========++=============");
         }
     }
 
@@ -351,7 +403,7 @@ public class Biblioteca {
         System.out.println("============================================");
 
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -363,7 +415,6 @@ public class Biblioteca {
         if (l == null) {
             System.out.println("\n======================================================");
             System.out.println("Livro não encontrado com o ISBN informado!");
-            System.out.println("======================================================");
             return;
         }
 
@@ -400,7 +451,7 @@ public class Biblioteca {
 
     private static void ListarLivro(int x) { // 5
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -433,7 +484,7 @@ public class Biblioteca {
         System.out.println("============================================");
 
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -448,16 +499,16 @@ public class Biblioteca {
                 if (l.getEmprestado()) {
                     System.out.println("\n======================================================");
                     System.out.println("Este livro já foi emprestado e ainda não foi devolvido!");
-                    System.out.println("Título: " + l.getTitulo());
+                    System.out.println("\nTítulo: " + l.getTitulo());
                     System.out.println("======================================================");
                 } else {
                     l.setEmprestado(true);
                     l.setDataEmprestimo(LocalDate.now());
                     System.out.println("\n======================================================");
                     System.out.println("Livro emprestado com sucesso!");
-                    System.out.println("Título: " + l.getTitulo());
-                    System.out.println("Autor: " + l.getAutor());
+                    System.out.println("\nTítulo: " + l.getTitulo());
                     System.out.println("Data do empréstimo: " + LocalDate.now());
+                    System.out.println("Você tem até DEZ dias para devolver o livro, ou será cobrado R$ 1,50 por dia de atraso!!");
                     System.out.println("======================================================");
                 }
                 break;
@@ -481,7 +532,7 @@ public class Biblioteca {
         System.out.println("============================================");
 
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros cadastrados no momento...");
+            semLivros();
             return;
         }
 
@@ -496,7 +547,7 @@ public class Biblioteca {
                 if (!l.getEmprestado()) {
                     System.out.println("\n======================================================");
                     System.out.println("Este livro não estava emprestado!");
-                    System.out.println("Título: " + l.getTitulo());
+                    System.out.println("\nTítulo: " + l.getTitulo());
                     System.out.println("======================================================");
                 } else {
                     l.setEmprestado(false);
@@ -504,8 +555,7 @@ public class Biblioteca {
                     l.setDataEmprestimo(null);
                     System.out.println("\n======================================================");
                     System.out.println("Livro devolvido com sucesso!");
-                    System.out.println("Título: " + l.getTitulo());
-                    System.out.println("Autor: " + l.getAutor());
+                    System.out.println("\nTítulo: " + l.getTitulo());
                     if (multaCobrada > 0) {
                         System.out.println("MULTA COBRADA: R$ " + String.format("%.2f", multaCobrada));
                     } else {
@@ -524,7 +574,7 @@ public class Biblioteca {
         }
     }
 
-    //Códigos reutilizáveis de busca
+    // Códigos reutilizáveis de busca
     private static Livro buscarLivroPorIsbn(String isbn) {
         for (Livro livro : livros) {
             if (livro.getIsbn().equalsIgnoreCase(isbn)) {
@@ -541,5 +591,11 @@ public class Biblioteca {
             }
         }
         return null;
+    }
+
+    private static void semLivros(){
+        System.out.println("\n\n\n=========++===========++==========++===========");
+            System.out.println("Não existem livros cadastrados no momento...");
+            System.out.println("=========++===========++==========++===========");
     }
 }

@@ -68,7 +68,7 @@ public abstract class itemBiblioteca {
     };
 
     public String toString() {
-        return "\n ISBN: " + isbn + "\nTÍTULO: "+ titulo +"\nAUTOR: " + autor + "\nANO: " + ano +"\nCATEGORIA: " + categoria + "\nEMPRESTADO: " + (emprestado? "Sim" : "Não");
+        return "\nISBN: " + isbn + "\nTÍTULO: "+ titulo +"\nAUTOR: " + autor + "\nANO: " + ano +"\nCATEGORIA: " + categoria + "\nEMPRESTADO: " + (emprestado? "Sim" : "Não");
     }
 
 }
